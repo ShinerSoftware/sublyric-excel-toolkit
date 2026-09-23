@@ -91,7 +91,7 @@ powershell -ExecutionPolicy Bypass -File .\install-excel.ps1
 
 详细步骤看 [`docs/03-PowerShell使用指南.md`](docs/03-PowerShell使用指南.md)。
 
-![安装效果截图](请在此插入安装完成后的功能区截图)
+
 
 ### 方式二：自己从源码打包（适合想改代码的人）
 
@@ -114,9 +114,9 @@ powershell -ExecutionPolicy Bypass -File .\install-excel.ps1
 
 ![韵词字幕产品截图](docs/images/intro.webp)
 
-- 🌐 官网：https://shinesoft.cn/zh-CN/
-- 📥 免费下载：https://shinesoft.cn/zh-CN/download/
-- 📖 教程与案例中心：https://shinesoft.cn/zh-CN/case-study/
+- 🌐 官网：https://www.shinesoft.cn/zh-CN/
+- 📥 免费下载：https://www.shinesoft.cn/zh-CN/download/
+- 📖 教程与案例中心：https://www.shinesoft.cn/zh-CN/case-study/
 
 这个 Excel 工具箱定位是"整理阶段的辅助工具"——把 Excel 里能做的前期
 文字工作做顺手，导出的 SRT 可以直接拖进韵词字幕，接上后续的时间轴精修
