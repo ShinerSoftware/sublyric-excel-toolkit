@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_OnLoad">
+  <ribbon>
+    <tabs>
+      <tab id="tabSubtitle" label="韵词字幕工具">
+        <group id="grpFormat" label="格式整理">
+          <button id="btnFormatSheet"
+                  label="基本格式处理"
+                  size="large"
+                  image="icon_format_sheet"
+                  onAction="Ribbon_FormatSheet"
+                  screentip="一键美化当前工作表"
+                  supertip="设置表头底色、隔行底纹，统一 B/C 列时间格式，清理 D/E 列空格与首字母大小写。" />
+          <button id="btnRemoveSymbols"
+                  label="删除句末符号"
+                  size="large"
+                  image="icon_remove_symbols"
+                  onAction="Ribbon_RemoveEndingSymbols"
+                  screentip="去除句末多余标点"
+                  supertip="删除单元格文本结尾处多余的标点符号，问号和感叹号会被保留。" />
+          <button id="btnAddSpaces"
+                  label="英文加空格"
+                  size="large"
+                  image="icon_add_spaces"
+                  onAction="Ribbon_AddEnglishSpaces"
+                  screentip="中英文之间自动加空格"
+                  supertip="选中单元格区域后点击，自动在中英文/数字/符号之间插入或去除空格。" />
+          <button id="btnReader"
+                  label="朗读校对"
+                  size="large"
+                  image="icon_reader"
+                  onAction="Ribbon_OpenReaderSidebar"
+                  screentip="用 Edge 自然语音朗读选中文本"
+                  supertip="将选中单元格的文本发送到 Edge 朗读窗口（自动贴靠屏幕右侧），并自动开始朗读，方便边听边校对。" />
+        </group>
+        <group id="grpExport" label="导出字幕">
+          <button id="btnExportBilingual"
+                  label="导出双语字幕"
+                  size="large"
+                  image="icon_export_bilingual"
+                  onAction="Ribbon_ExportBilingualSRT"
+                  screentip="导出为双语 SRT 字幕文件"
+                  supertip="按 A=序号 B=开始时间 C=结束时间 D=英文 E=中文 的列结构导出双语 SRT。" />
+          <button id="btnExportChinese"
+                  label="导出中文字幕"
+                  size="large"
+                  image="icon_export_chinese"
+                  onAction="Ribbon_ExportChineseSRT"
+                  screentip="仅导出中文字幕 SRT"
+                  supertip="仅导出 E 列中文文本为 SRT 文件。" />
+          <button id="btnExportWord"
+                  label="导出双语字幕文档"
+                  size="large"
+                  image="icon_export_word"
+                  onAction="Ribbon_ExportToWord"
+                  screentip="导出双语字幕为 Word 文档"
+                  supertip="将双语字幕连同时间轴导出为 .docx 文档，需本机已安装 Microsoft Word。" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>韵词朗读校对</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+body{
+  background:linear-gradient(135deg,#f5f7fa 0%,#e4e7eb 100%);
+  color:#2d3748;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.container{
+  width:100%;
+  max-width:520px;
+  height:100vh;
+  background:rgba(255,255,255,0.95);
+  border-radius:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+header{text-align:center;padding:20px 20px 10px;}
+h1{font-size:1.8rem;margin-bottom:6px;color:#0078d4;display:flex;align-items:center;justify-content:center;gap:10px;}
+.edge-logo{width:40px;height:40px;background:linear-gradient(135deg,#0078d4 0%,#1490df 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:white;}
+.control-panel{padding:0 20px 15px;border-bottom:1px solid #e2e8f0;}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+select{flex:1;min-width:150px;padding:10px;border-radius:8px;background:white;border:2px solid #e2e8f0;color:#2d3748;font-size:0.9rem;font-weight:500;}
+.rate-control{display:flex;align-items:center;gap:10px;margin-bottom:10px;background:white;padding:10px 15px;border-radius:8px;border:2px solid #e2e8f0;}
+.rate-control label{font-size:0.9rem;color:#4a5568;white-space:nowrap;}
+.rate-control input[type=range]{flex:1;}
+.buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}
+button{padding:10px 20px;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;gap:6px;}
+.start-stop-btn{background:#10b981;color:white;}
+.start-stop-btn.stop{background:#ef4444;}
+.start-stop-btn:hover{background:#059669;}
+.start-stop-btn.stop:hover{background:#dc2626;}
+.pause-resume-btn{background:#f59e0b;color:white;}
+.pause-resume-btn:hover{background:#d97706;}
+.clear-btn{background:#6b7280;color:white;}
+.clear-btn:hover{background:#4b5563;}
+.progress-container{width:100%;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-bottom:10px;}
+.progress-bar{height:100%;width:0%;background:#0078d4;border-radius:3px;transition:width 0.3s ease;}
+.content-area{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  overflow:hidden;
+  padding:15px 20px;
+}
+/* ✅ 自动调节文本区高度，保持整体协调 */
+.text-area{
+  flex:1;
+  min-height:300px;
+  max-height:calc(100vh - 360px);
+  position:relative;
+  margin-bottom:10px;
+}
+textarea,.highlighted-text{
+  width:100%;
+  height:100%;
+  padding:12px;
+  border-radius:8px;
+  background:white;
+  border:2px solid #e2e8f0;
+  color:#2d3748;
+  font-size:0.95rem;
+  line-height:1.5;
+  overflow-y:auto;
+}
+textarea{resize:none;}
+.highlighted-text{display:none;white-space:pre-wrap;word-break:break-word;}
+.shortcut-hint{text-align:center;margin-top:8px;color:#4a5568;font-size:0.9rem;line-height:1.6;}
+.status{text-align:center;margin-top:6px;padding:10px;border-radius:8px;background:white;font-size:0.9rem;border:2px solid #e2e8f0;}
+.highlight{color:#10b981;font-weight:bold;}
+.error{color:#ef4444;font-weight:bold;}
+footer{text-align:center;color:#718096;font-size:0.8rem;padding:8px;}
+mark{background-color:#0078d4;color:white;padding:0 2px;border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="container">
+<header><h1><span class="edge-logo">E</span>Edge 朗读器</h1></header>
+
+<div class="control-panel">
+  <div class="controls">
+    <select id="voice-select"><option value="">✨ 加载自然语音中...</option></select>
+  </div>
+  <div class="rate-control">
+    <label style="display:flex;align-items:center;gap:4px;">
+      <input type="checkbox" id="charHighlight" checked> 逐字高亮
+    </label>
+    <label for="rate-slider">语速: <span id="rate-value">1.0</span></label>
+    <input type="range" id="rate-slider" min="0.5" max="2" step="0.1" value="1.0">
+  </div>
+  <div class="buttons">
+    <button id="start-stop-btn" class="start-stop-btn"><span>▶</span> 开始朗读</button>
+    <button id="pause-resume-btn" class="pause-resume-btn" disabled><span>⏸</span> 暂停</button>
+    <button id="clear-btn" class="clear-btn"><span>🗑️</span> 清空</button>
+  </div>
+  <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+</div>
+
+<div class="content-area">
+  <div class="text-area">
+    <textarea id="text-to-speech" placeholder="请输入要朗读的文本...">欢迎使用Edge朗读器！这是一个简洁易用的文本朗读工具。您可以选择不同的语音和调整语速，然后点击开始朗读按钮。试试暂停和继续功能吧！</textarea>
+    <div class="highlighted-text" id="highlighted-text"></div>
+  </div>
+
+  <p class="shortcut-hint">
+    🔑 快捷键提示：<br>
+    开始 / 停止朗读：Ctrl + Shift + S<br>
+    暂停 / 继续：空格键<br>
+    清空文本：Ctrl + Shift + C
+  </p>
+
+  <div class="status" id="status">状态: <span class="highlight">就绪</span></div>
+</div>
+
+<footer><p>© 2025 Edge 朗读器 · 自然语音优选版</p></footer>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+// DOM 元素
+const textareaEl = document.getElementById('text-to-speech');
+
+// ---------- 从 Excel 传入的文本：改为轮询共享临时文件 ----------
+// 韵词字幕 Excel 插件的"朗读校对"按钮会把选中单元格的文本写入一个
+// 固定的临时文件，并通过 ?textfile=... 把文件路径传进来。
+// 页面加载后、以及之后每隔一段时间，都会重新读取这个文件；
+// 一旦发现内容变化（说明 Excel 那边又点了一次朗读校对，选了新的文本），
+// 就自动替换文本框内容并重新开始朗读——不需要重新打开一个新窗口。
+const urlParams = new URLSearchParams(window.location.search);
+const textFileParam = urlParams.get('textfile');
+const shouldAutoStart = urlParams.get('autostart') === '1';
+const pollFileUrl = textFileParam ? ('file:///' + textFileParam.replace(/\\/g, '/')) : null;
+let lastLoadedText = null;
+const highlightedDiv = document.getElementById('highlighted-text');
+const voiceSelect = document.getElementById('voice-select');
+const rateSlider = document.getElementById('rate-slider');
+const rateValueSpan = document.getElementById('rate-value');
+const startStopBtn = document.getElementById('start-stop-btn');
+const pauseResumeBtn = document.getElementById('pause-resume-btn');
+const clearBtn = document.getElementById('clear-btn');
+const statusDiv = document.getElementById('status');
+const progressBar = document.getElementById('progress-bar');
+const charHighlightCheckbox = document.getElementById('charHighlight');
+
+// 朗读相关状态
+let speechSynth = window.speechSynthesis;
+let currentUtterance = null;
+let availableVoices = [];
+let isPlaying = false;
+let isPaused = false;
+let currentText = '';
+
+// ---------- 核心升级: 仅保留简体中文自然语音 + 英文(英国/美国)自然语音 ----------
+// 根据 Edge 最新自然语音命名规则过滤
+// 自然语音典型标识: "Microsoft Xiaoxiao Natural" / "Microsoft Yunxi Natural" / "Microsoft Guy (en-US) Natural"
+// 中文自然语音: 包含 zh-CN, 且名称中包含 "Natural" 且 (Xiaoxiao / Yunxi / Xiaoyi 等)
+// 英文自然语音: 语言 en-US 或 en-GB，且名称包含 "Natural"
+// 同时保留传统高质量选择，确保仅显示符合上述标准的「自然」语音。
+
+function isPreferredNaturalVoice(voice) {
+  const lang = voice.lang.toLowerCase();
+  const name = voice.name || '';
+  // 必须包含 "natural" 标识 (Edge 新版自然语音)
+  const isNatural = name.toLowerCase().includes('natural');
+  if (!isNatural) return false;
+  
+  // 简体中文: zh-CN (优先) 并且名称包含简体中文标识
+  const isZhCN = lang === 'zh-cn' || lang === 'zh-CN' || lang.includes('zh-cn');
+  if (isZhCN) {
+    // 额外确保是微软自然语音系列 (Xiaoxiao, Yunxi, Xiaoyi 等典型中文自然)
+    const isChineseNatural = /xiaoxiao|yunxi|xiaoyi|zhong/i.test(name);
+    // 如果是中文语言且带natural基本上就是高质量自然语音，宽松过滤但保留最好效果
+    return isChineseNatural || (name.toLowerCase().includes('natural') && lang === 'zh-cn');
+  }
+  
+  // 英文: 英国英语 en-gb 或 美式英语 en-us
+  const isEnUS = lang === 'en-us';
+  const isEnGB = lang === 'en-gb';
+  if (isEnUS || isEnGB) {
+    // 英文自然语音命名一般包含 "Natural" 且区分 Guy/Jenny/Sonia等
+    // 我们保留所有 en-us/en-gb 并且是自然语音
+    return true;
+  }
+  
+  return false;
+}
+
+// 加载并填充自然语音下拉框 (仅简体中文 & 英式/美式自然)
+function populateNaturalVoices() {
+  // 从 speechSynthesis 获取所有可用语音
+  let allVoices = speechSynth.getVoices();
+  if (!allVoices || allVoices.length === 0) {
+    // 如果还没加载完成，等待 onvoiceschanged
+    return false;
+  }
+  
+  // 筛选自然语音
+  const naturalVoices = allVoices.filter(voice => isPreferredNaturalVoice(voice));
+  
+  if (naturalVoices.length === 0) {
+    // 降级兜底: 如果当前浏览器不支持自然语音标记（例如旧版或者非Edge），则展示传统的zh-CN / en-US / en-GB 较高品质语音并标注
+    // 但我们仍然尽力过滤: 展示任何 zh-CN 以及 en-US/en-GB 标准语音，并在文案提醒。
+    const fallbackVoices = allVoices.filter(voice => {
+      const lang = voice.lang.toLowerCase();
+      return lang === 'zh-cn' || lang === 'en-us' || lang === 'en-gb';
+    });
+    if (fallbackVoices.length > 0) {
+      voiceSelect.innerHTML = '';
+      fallbackVoices.forEach(voice => {
+        const option = document.createElement('option');
+        option.value = voice.name;
+        let displayLang = '';
+        if (voice.lang === 'zh-CN') displayLang = '简体中文';
+        else if (voice.lang === 'en-US') displayLang = '英语(美国)';
+        else if (voice.lang === 'en-GB') displayLang = '英语(英国)';
+        else displayLang = voice.lang;
+        option.textContent = `${voice.name} (${displayLang}) ${voice.lang.includes('Natural') ? '🌿自然' : ''}`;
+        voiceSelect.appendChild(option);
+      });
+      // 尝试默认选中第一个中文语音或美国英语
+      const def = fallbackVoices.find(v => v.lang === 'zh-CN') || fallbackVoices.find(v => v.lang === 'en-US');
+      if (def) voiceSelect.value = def.name;
+      return true;
+    } else {
+      voiceSelect.innerHTML = '<option value="">未检测到自然语音，请刷新重试</option>';
+      return false;
+    }
+  }
+  
+  // 构建下拉菜单，显示友好名称
+  voiceSelect.innerHTML = '<option value="">🌿 选择自然语音</option>';
+  naturalVoices.forEach(voice => {
+    const option = document.createElement('option');
+    option.value = voice.name;
+    let languageLabel = '';
+    if (voice.lang === 'zh-CN') languageLabel = '🇨🇳 简体中文';
+    else if (voice.lang === 'en-US') languageLabel = '🇺🇸 英语(美国)';
+    else if (voice.lang === 'en-GB') languageLabel = '🇬🇧 英语(英国)';
+    else languageLabel = voice.lang;
+    
+    // 提取自然语音品牌后缀
+    let shortName = voice.name;
+    if (shortName.includes('Natural')) {
+      shortName = shortName.replace('Microsoft ', '').replace(' Natural', '✨自然');
+    }
+    option.textContent = `${shortName} (${languageLabel})`;
+    voiceSelect.appendChild(option);
+  });
+  
+  // 自动默认选择：优先中文自然（如 Xiaoxiao），其次美式自然，再英式自然
+  let defaultVoice = naturalVoices.find(v => v.lang === 'zh-CN');
+  if (!defaultVoice) defaultVoice = naturalVoices.find(v => v.lang === 'en-US');
+  if (!defaultVoice) defaultVoice = naturalVoices.find(v => v.lang === 'en-GB');
+  if (defaultVoice) voiceSelect.value = defaultVoice.name;
+  else if (naturalVoices.length > 0) voiceSelect.value = naturalVoices[0].name;
+  
+  return true;
+}
+
+// 动态刷新语音列表 (由于语音异步加载，需要确保)
+function refreshVoiceListAndFill() {
+  if (speechSynth.getVoices().length > 0) {
+    availableVoices = speechSynth.getVoices();
+    populateNaturalVoices();
+  } else {
+    // 延迟重试
+    setTimeout(() => {
+      if (speechSynth.getVoices().length > 0) {
+        availableVoices = speechSynth.getVoices();
+        populateNaturalVoices();
+      } else {
+        voiceSelect.innerHTML = '<option value="">💬 语音列表加载中，稍后刷新</option>';
+      }
+    }, 150);
+  }
+}
+
+// 语音改变事件监听 (Edge / Chrome)
+if (speechSynth.onvoiceschanged !== undefined) {
+  speechSynth.onvoiceschanged = () => {
+    availableVoices = speechSynth.getVoices();
+    populateNaturalVoices();
+    // 更新状态提示
+    const finalCount = voiceSelect.querySelectorAll('option[value]:not([value=""])').length;
+    if (finalCount > 0) {
+      statusDiv.innerHTML = '状态: <span class="highlight">自然语音已就绪 ✅</span>';
+      setTimeout(() => {
+        if (!isPlaying && !speechSynth.speaking) {
+          statusDiv.innerHTML = '状态: <span class="highlight">就绪</span>';
+        }
+      }, 1800);
+    }
+  };
+}
+
+// 初始填充语音
+refreshVoiceListAndFill();
+
+// ---------- 辅助函数 ----------
+function updateRateDisplay() {
+  rateValueSpan.textContent = rateSlider.value;
+}
+
+rateSlider.addEventListener('input', () => {
+  updateRateDisplay();
+  if (currentUtterance && isPlaying && !isPaused) {
+    // 如果正在朗读中途改变语速，新语速会在下次朗读生效，不影响当前句子；保留不干扰
+  }
+});
+updateRateDisplay();
+
+// 停止当前朗读并重置UI
+function stopSpeaking(resetUI = true) {
+  if (speechSynth.speaking) {
+    speechSynth.cancel();
+  }
+  if (resetUI) {
+    isPlaying = false;
+    isPaused = false;
+    startStopBtn.innerHTML = '<span>▶</span> 开始朗读';
+    startStopBtn.classList.remove('stop');
+    pauseResumeBtn.disabled = true;
+    pauseResumeBtn.innerHTML = '<span>⏸</span> 暂停';
+    // 不改变高亮区域状态，只是清空进度
+    progressBar.style.width = '0%';
+    highlightedDiv.style.display = 'none';
+    textareaEl.style.display = 'block';
+    if (!statusDiv.innerHTML.includes('完成') && !statusDiv.innerHTML.includes('停止')) {
+      statusDiv.innerHTML = '状态: <span class="highlight">已停止</span>';
+    } else {
+      statusDiv.innerHTML = '状态: <span class="highlight">已停止</span>';
+    }
+  }
+  currentUtterance = null;
+}
+
+// 清除高亮辅助
+function resetHighlightDisplay() {
+  highlightedDiv.style.display = 'none';
+  textareaEl.style.display = 'block';
+  highlightedDiv.innerHTML = '';
+}
+
+// 开始朗读 (核心逻辑保持原有风格但完美适配自然语音)
+function startReading() {
+  // 如果正在朗读则停止当前再重新开始 (与原本按钮行为一致)
+  if (isPlaying) {
+    stopSpeaking(true);
+    // 如果用户点了停止播放，不自动开始
+    return;
+  }
+  
+  // 取消任何正在进行的朗读避免冲突
+  if (speechSynth.speaking) {
+    speechSynth.cancel();
+  }
+  
+  const rawText = textareaEl.value.trim();
+  if (!rawText) {
+    statusDiv.innerHTML = '状态: <span class="error">请输入要朗读的文本</span>';
+    return;
+  }
+
+  // Natural 语音由 Edge 实时联网合成，断网直接提示，不再尝试朗读
+  if (!navigator.onLine) {
+    statusDiv.innerHTML = '状态: <span class="error">网络未连接 ⚠️ Natural 语音需要联网才能朗读，请检查网络后重试</span>';
+    return;
+  }
+
+  currentText = rawText;
+  
+  // 准备高亮展示区
+  highlightedDiv.innerHTML = currentText.replace(/\n/g, '<br>');
+  highlightedDiv.style.display = 'block';
+  textareaEl.style.display = 'none';
+  
+  // 创建新的朗读实例
+  const utterance = new SpeechSynthesisUtterance(currentText);
+  // 获取选中的语音对象（必须是自然语音优先）
+  const selectedVoiceName = voiceSelect.value;
+  if (selectedVoiceName) {
+    const selectedVoice = availableVoices.find(v => v.name === selectedVoiceName);
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    } else {
+      // 如果在当前 voices 列表中找不到，尝试重新加载一次
+      const freshVoices = speechSynth.getVoices();
+      const refound = freshVoices.find(v => v.name === selectedVoiceName);
+      if (refound) utterance.voice = refound;
+      else {
+        // 保持默认浏览器语音，但不报错
+        console.warn("selected natural voice not found, using default");
+      }
+    }
+  }
+  
+  utterance.rate = parseFloat(rateSlider.value);
+  utterance.pitch = 1.0;
+  utterance.volume = 1;
+  
+  // 事件绑定
+  utterance.onstart = () => {
+    isPlaying = true;
+    isPaused = false;
+    startStopBtn.innerHTML = '<span>⏹</span> 停止朗读';
+    startStopBtn.classList.add('stop');
+    pauseResumeBtn.disabled = false;
+    pauseResumeBtn.innerHTML = '<span>⏸</span> 暂停';
+    statusDiv.innerHTML = '状态: <span class="highlight">朗读中... 🎙️</span>';
+    progressBar.style.width = '0%';
+  };
+  
+  // 逐词/逐字符高亮边界事件 (完全继承原版逻辑并优化性能)
+  utterance.onboundary = (event) => {
+    if (event.charIndex !== undefined && charHighlightCheckbox.checked) {
+      const idx = event.charIndex;
+      // 避免越界
+      if (idx >= 0 && idx <= currentText.length) {
+        if (charHighlightCheckbox.checked) {
+          // 逐字高亮模式 (原版逐字)
+          const before = currentText.slice(0, idx);
+          const currentChar = currentText.slice(idx, idx + 1);
+          const after = currentText.slice(idx + 1);
+          highlightedDiv.innerHTML = before.replace(/\n/g, '<br>') + 
+            `<mark>${escapeHtml(currentChar)}</mark>` + 
+            after.replace(/\n/g, '<br>');
+        } else {
+          // 句子高亮模式（基于标点的高级高亮保留）
+          const re = /[。！？；：?!;.\n]/;
+          let sentenceStart = 0;
+          let sentenceEnd = currentText.length;
+          for (let j = idx - 1; j >= 0; j--) {
+            if (re.test(currentText[j])) {
+              sentenceStart = j + 1;
+              break;
+            }
+          }
+          for (let j = idx; j < currentText.length; j++) {
+            if (re.test(currentText[j])) {
+              sentenceEnd = j + 1;
+              break;
+            }
+          }
+          const beforeText = currentText.slice(0, sentenceStart);
+          const sentence = currentText.slice(sentenceStart, sentenceEnd);
+          const afterText = currentText.slice(sentenceEnd);
+          highlightedDiv.innerHTML = beforeText.replace(/\n/g, '<br>') + 
+            `<mark>${escapeHtml(sentence)}</mark>` + 
+            afterText.replace(/\n/g, '<br>');
+        }
+        
+        const markEl = highlightedDiv.querySelector('mark');
+        if (markEl) markEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 更新进度条
+        const percent = (idx / currentText.length) * 100;
+        progressBar.style.width = percent.toFixed(1) + '%';
+      }
+    } else if (event.charIndex !== undefined && !charHighlightCheckbox.checked) {
+      // 未开启逐字高亮但也可以更新进度
+      const percent = (event.charIndex / currentText.length) * 100;
+      progressBar.style.width = percent.toFixed(1) + '%';
+    }
+  };
+  
+  utterance.onend = () => {
+    isPlaying = false;
+    isPaused = false;
+    startStopBtn.innerHTML = '<span>▶</span> 开始朗读';
+    startStopBtn.classList.remove('stop');
+    pauseResumeBtn.disabled = true;
+    pauseResumeBtn.innerHTML = '<span>⏸</span> 暂停';
+    statusDiv.innerHTML = '状态: <span class="highlight">朗读完成 ✓</span>';
+    progressBar.style.width = '100%';
+    highlightedDiv.style.display = 'none';
+    textareaEl.style.display = 'block';
+    currentUtterance = null;
+    // 3秒后自动将状态恢复为就绪，如不干扰
+    setTimeout(() => {
+      if (!isPlaying && !speechSynth.speaking) {
+        if (statusDiv.innerHTML.includes('完成')) 
+          statusDiv.innerHTML = '状态: <span class="highlight">就绪</span>';
+      }
+    }, 2000);
+  };
+  
+  utterance.onerror = (err) => {
+    console.error('TTS错误: ', err);
+    if (!navigator.onLine || err.error === 'network' || err.error === 'synthesis-failed') {
+      statusDiv.innerHTML = '状态: <span class="error">网络中断 ⚠️ Natural 语音朗读失败，请检查网络后重试</span>';
+    } else {
+      statusDiv.innerHTML = '状态: <span class="error">朗读出错，请重试</span>';
+    }
+    stopSpeaking(true);
+  };
+  
+  currentUtterance = utterance;
+  speechSynth.speak(utterance);
+}
+
+// 简单防XSS工具函数
+function escapeHtml(str) {
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+    return c;
+  });
+}
+
+// 暂停/继续
+function togglePauseResume() {
+  if (!isPlaying && !speechSynth.speaking) {
+    // 未朗读时无效
+    return;
+  }
+  if (speechSynth.speaking && !isPaused) {
+    speechSynth.pause();
+    isPaused = true;
+    statusDiv.innerHTML = '状态: <span class="highlight">已暂停 ⏸️</span>';
+    pauseResumeBtn.innerHTML = '<span>⏵</span> 继续';
+  } else if (isPaused) {
+    speechSynth.resume();
+    isPaused = false;
+    statusDiv.innerHTML = '状态: <span class="highlight">朗读中... 🎙️</span>';
+    pauseResumeBtn.innerHTML = '<span>⏸</span> 暂停';
+  }
+}
+
+// 清空文本
+function clearTextAndStop() {
+  if (speechSynth.speaking) {
+    stopSpeaking(true);
+  }
+  textareaEl.value = '';
+  textareaEl.focus();
+  statusDiv.innerHTML = '状态: <span class="highlight">已清空文本</span>';
+  resetHighlightDisplay();
+  progressBar.style.width = '0%';
+  setTimeout(() => {
+    if (!isPlaying) statusDiv.innerHTML = '状态: <span class="highlight">就绪</span>';
+  }, 1500);
+}
+
+// 绑定按钮事件
+startStopBtn.addEventListener('click', startReading);
+pauseResumeBtn.addEventListener('click', togglePauseResume);
+clearBtn.addEventListener('click', clearTextAndStop);
+
+// 快捷键: Ctrl+Shift+S / 空格 / Ctrl+Shift+C
+document.addEventListener('keydown', (e) => {
+  // 开始/停止朗读
+  if (e.ctrlKey && e.shiftKey && e.code === 'KeyS') {
+    e.preventDefault();
+    startStopBtn.click();
+  }
+  // 空格: 暂停/继续（仅当有朗读或暂停状态时）
+  if (e.code === 'Space' && (isPlaying || isPaused || speechSynth.speaking)) {
+    e.preventDefault();
+    if (pauseResumeBtn.disabled === false || isPaused) {
+      pauseResumeBtn.click();
+    }
+  }
+  // 清空文本
+  if (e.ctrlKey && e.shiftKey && e.code === 'KeyC') {
+    e.preventDefault();
+    clearBtn.click();
+  }
+});
+
+// 监控文本域变化重置进度 (可选)
+textareaEl.addEventListener('input', () => {
+  if (!speechSynth.speaking && !isPlaying) {
+    progressBar.style.width = '0%';
+  }
+});
+
+// 如果页面关闭时取消朗读
+window.addEventListener('beforeunload', () => {
+  if (speechSynth.speaking) speechSynth.cancel();
+});
+
+// 实时监听网络状态变化，断网时给出提示（不在朗读中时也提醒）
+window.addEventListener('offline', () => {
+  if (speechSynth.speaking) {
+    stopSpeaking(true);
+  }
+  statusDiv.innerHTML = '状态: <span class="error">网络未连接 ⚠️ Natural 语音需要联网才能朗读</span>';
+});
+window.addEventListener('online', () => {
+  if (statusDiv.innerHTML.includes('网络未连接') || statusDiv.innerHTML.includes('网络中断')) {
+    statusDiv.innerHTML = '状态: <span class="highlight">网络已恢复，可以朗读了 ✅</span>';
+    setTimeout(() => {
+      if (!isPlaying && !speechSynth.speaking) {
+        statusDiv.innerHTML = '状态: <span class="highlight">就绪</span>';
+      }
+    }, 1800);
+  }
+});
+if (!navigator.onLine) {
+  statusDiv.innerHTML = '状态: <span class="error">网络未连接 ⚠️ Natural 语音需要联网才能朗读</span>';
+}
+
+// ---------- 轮询共享文本文件，实现"不新开窗口、直接替换内容" ----------
+async function checkForNewText(isInitialLoad) {
+  if (!pollFileUrl) return;
+  try {
+    const resp = await fetch(pollFileUrl + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!resp.ok) return;
+    let text = await resp.text();
+    text = text.replace(/^\uFEFF/, '').trim(); // 去掉可能的 UTF-8 BOM
+    if (!text || text === lastLoadedText) return; // 没内容或者内容没变化，跳过
+
+    lastLoadedText = text;
+    textareaEl.value = text;
+
+    if (isInitialLoad) {
+      if (shouldAutoStart) tryAutoStart();
+    } else {
+      // 页面已经开着：视为"Excel 那边又发来新内容"，直接替换并重新朗读
+      // 注意：speechSynth.cancel() 是异步生效的（要等 onerror/onend 回调才会
+      // 把 isPlaying 复位），如果紧接着就调用 startReading()，它会因为
+      // isPlaying 还没来得及复位成 false，误判成"正在播放中，这次调用是要停止"，
+      // 结果只是打断了朗读、没有真正开始新的——所以这里手动同步复位一次状态
+      speechSynth.cancel();
+      isPlaying = false;
+      isPaused = false;
+      currentUtterance = null;
+      startReading();
+      statusDiv.innerHTML = '状态: <span class="highlight">检测到新内容，已替换朗读 🔄</span>';
+    }
+  } catch (e) {
+    console.warn('读取共享文本文件失败：', e);
+  }
+}
+
+let autoStarted = false;
+function tryAutoStart() {
+  if (autoStarted) return;
+  autoStarted = true;
+  // 等自然语音列表加载好了再开始朗读，避免用到默认语音而不是自然语音
+  if (speechSynth.getVoices().length > 0) {
+    setTimeout(startReading, 150);
+  } else {
+    const originalOnVoicesChanged = speechSynth.onvoiceschanged;
+    speechSynth.onvoiceschanged = function (e) {
+      if (typeof originalOnVoicesChanged === 'function') originalOnVoicesChanged(e);
+      startReading();
+    };
+    setTimeout(startReading, 1200); // 兜底：语音事件迟迟不触发时也能开始
+  }
+}
+
+// 首次加载先读一次；之后每隔 800ms 轮询一次，检测 Excel 是否发来新内容
+checkForNewText(true);
+setInterval(() => checkForNewText(false), 800);
+
+});
+</script>
+</body>
+</html>
