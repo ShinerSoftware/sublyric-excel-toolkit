@@ -110,7 +110,7 @@ powershell -ExecutionPolicy Bypass -File .\install-excel.ps1
 - 50+ 卡拉OK 动态特效预设，K-Cut 智能音节切割
 - 支持 MP4/MKV/MOV 以及 SRT/ASS/WebVTT/Word/Excel 等 10+ 种格式导出
 
-![韵词字幕产品截图](https://www.shinesoft.cn/images/tutorials/intro.webp)
+![韵词字幕产品截图](docs/images/intro.webp)
 
 - 🌐 官网：https://shinesoft.cn/zh-CN/
 - 📥 免费下载：https://shinesoft.cn/zh-CN/download/
