@@ -7,7 +7,7 @@ English | [简体中文](README.md)
 > into [Sublyric Subtitle](https://shinesoft.cn/zh-CN/) for timeline
 > fine-tuning and karaoke effects.
 
-![Project banner](请在此插入项目封面图/Banner)
+![Project banner](docs/images/UI-banner.png)
 
 ---
 
@@ -56,7 +56,7 @@ A few recurring headaches during subtitle/script prep:
 
 Adds a "Sublyric Subtitle Tools" tab to the Excel ribbon:
 
-![Excel ribbon screenshot](请在此插入Excel功能区截图)
+![Excel ribbon screenshot](docs/images/toolkitRibon.png)
 
 | Group | Feature | Description |
 |---|---|---|
@@ -70,7 +70,7 @@ Adds a "Sublyric Subtitle Tools" tab to the Excel ribbon:
 
 **Read-aloud proofreading preview**
 
-![Read-aloud window screenshot](请在此插入朗读窗口截图/GIF)
+![Read-aloud window screenshot](docs/images/readerUI.png)
 
 Read-aloud proofreading calls the real Microsoft Edge browser installed on
 your system (Chromium-based), using Edge's natural voices rather than
@@ -133,7 +133,7 @@ export**.
 - Exports to MP4/MKV/MOV video, and SRT/ASS/WebVTT/Word/Excel and more
   (10+ formats)
 
-![Sublyric Subtitle product screenshot](请在此插入韵词字幕软件截图)
+![Sublyric Subtitle product screenshot](docs/images/intro.webp)
 
 - 🌐 Website: https://shinesoft.cn/zh-CN/
 - 📥 Free download: https://shinesoft.cn/zh-CN/download/

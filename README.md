@@ -6,7 +6,7 @@
 > 免费、开源，做完之后一键拖进 [韵词字幕](https://shinesoft.cn/zh-CN/)，
 > 接着做时间轴精修和卡拉OK 特效制作。
 
-![项目封面图](请在此插入项目封面图/Banner)
+![项目封面图](docs/images/UI-banner.png)
 
 ---
 
@@ -47,7 +47,7 @@
 
 功能区新增"韵词字幕工具"选项卡：
 
-![Excel功能区截图](请在此插入Excel功能区截图)
+![Excel功能区截图](docs/images/toolkitRibon.png)
 
 | 分组 | 功能 | 说明 |
 |---|---|---|
@@ -61,7 +61,7 @@
 
 **朗读校对效果预览**
 
-![朗读校对截图](请在此插入朗读窗口截图/GIF)
+![朗读校对截图](docs/images/readerUI.png)
 
 朗读校对调用的是系统里真正的 Microsoft Edge（Chromium 内核），用的是 Edge
 的自然语音，不是老式机械音；窗口会贴靠在屏幕右侧、撑满屏幕高度，视觉上接近
@@ -112,7 +112,7 @@ powershell -ExecutionPolicy Bypass -File .\install-excel.ps1
 - 50+ 卡拉OK 动态特效预设，K-Cut 智能音节切割
 - 支持 MP4/MKV/MOV 以及 SRT/ASS/WebVTT/Word/Excel 等 10+ 种格式导出
 
-![韵词字幕产品截图](请在此插入韵词字幕软件截图)
+![韵词字幕产品截图](docs/images/intro.webp)
 
 - 🌐 官网：https://shinesoft.cn/zh-CN/
 - 📥 免费下载：https://shinesoft.cn/zh-CN/download/
