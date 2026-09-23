@@ -25,7 +25,7 @@
 
 ### 1.1 为何做这个项目
 
-这个工具箱最早只是团队内部为了配合 [韵词字幕](https://shinesoft.cn/zh-CN/)
+这个工具箱最早只是团队内部为了配合 [韵词字幕](https://www.shinesoft.cn/zh-CN/)
 自用的小脚本——一份处理字幕的 Excel VBA 宏。用得久了发现，字幕组和译制
 团队日常整理台本、核对双语文本这类工作，大部分时间其实是在 Excel 这类最
 基础的办公软件里完成的：贴文本、对时间轴、挑错字、读一遍听感对不对。
@@ -128,7 +128,7 @@ powershell -ExecutionPolicy Bypass -File .\install-excel.ps1
 
 用的过程中遇到问题、有新想法，欢迎在 [Issues](../../issues) 里提，或者
 直接 Fork 改了发 Pull Request。如果这个工具帮到了你，也欢迎去
-[官网](https://shinesoft.cn/zh-CN/) 看看韵词字幕本体，顺手点个 Star ⭐。
+[官网](https://www.shinesoft.cn/zh-CN/) 看看韵词字幕本体，顺手点个 Star ⭐。
 
 ## License
 
