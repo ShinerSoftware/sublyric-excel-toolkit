@@ -4,7 +4,7 @@ English | [简体中文](README.md)
 
 > Clean up, proofread, and export subtitles — all inside Excel.
 > Free and open-source. Once you're done, drop the exported SRT straight
-> into [Sublyric Subtitle](https://shinesoft.cn/zh-CN/) for timeline
+> into [Sublyric Subtitle](https://www.shinesoft.cn/zh-CN/) for timeline
 > fine-tuning and karaoke effects.
 
 ![Project banner](docs/images/UI-banner.png)
@@ -27,7 +27,7 @@ English | [简体中文](README.md)
 ### 1.1 Why this project exists
 
 This toolkit started out as an internal script our team used alongside
-[Sublyric Subtitle](https://shinesoft.cn/zh-CN/) — a small Excel VBA macro
+[Sublyric Subtitle](https://www.shinesoft.cn/zh-CN/) — a small Excel VBA macro
 for handling subtitles. Over time we noticed that subtitle groups and
 localization teams spend most of their prep time in the most basic office
 software: pasting text, aligning timecodes, catching typos, reading things
@@ -106,7 +106,7 @@ leftovers.
 See [`docs/03-PowerShell使用指南.md`](docs/03-PowerShell使用指南.md) for
 details (currently Chinese-only — translation welcome via PR).
 
-![Post-install screenshot](请在此插入安装完成后的功能区截图)
+
 
 ### Option B: Build from source yourself
 
@@ -135,9 +135,9 @@ export**.
 
 ![Sublyric Subtitle product screenshot](docs/images/intro.webp)
 
-- 🌐 Website: https://shinesoft.cn/zh-CN/
-- 📥 Free download: https://shinesoft.cn/zh-CN/download/
-- 📖 Tutorials & case studies: https://shinesoft.cn/zh-CN/case-study/
+- 🌐 Website: https://www.shinesoft.cn/zh-CN/
+- 📥 Free download: https://www.shinesoft.cn/zh-CN/download/
+- 📖 Tutorials & case studies: https://www.shinesoft.cn/zh-CN/case-study/
 
 This Excel toolkit is meant as a "prep-stage helper" — it smooths out the
 text-editing work you'd do in Excel before the real subtitling begins.
@@ -150,7 +150,7 @@ timeline fine-tuning and effects work.
 
 Found a bug or have an idea? Open an [issue](../../issues), or fork the
 repo and send a pull request. If this tool has been useful to you, check
-out [Sublyric Subtitle](https://shinesoft.cn/zh-CN/) itself, and consider
+out [Sublyric Subtitle](https://www.shinesoft.cn/zh-CN/) itself, and consider
 leaving a ⭐.
 
 ## License
