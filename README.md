@@ -1,10 +1,12 @@
 # 韵词字幕 · Excel 字幕工具箱
 
+[English](README.en.md) | 简体中文
+
 > 在 Excel 里就能完成字幕整理、格式清洗、朗读校对、导出 SRT——
 > 免费、开源，做完之后一键拖进 [韵词字幕](https://shinesoft.cn/zh-CN/)，
 > 接着做时间轴精修和卡拉OK 特效制作。
 
-![项目封面图](docs/images/UI-banner.png)
+![项目封面图](请在此插入项目封面图/Banner)
 
 ---
 
@@ -45,7 +47,7 @@
 
 功能区新增"韵词字幕工具"选项卡：
 
-![Excel功能区截图](docs/images/toolkitRibon.png)
+![Excel功能区截图](请在此插入Excel功能区截图)
 
 | 分组 | 功能 | 说明 |
 |---|---|---|
@@ -59,7 +61,7 @@
 
 **朗读校对效果预览**
 
-![朗读校对截图](docs/images/readerUI.png)
+![朗读校对截图](请在此插入朗读窗口截图/GIF)
 
 朗读校对调用的是系统里真正的 Microsoft Edge（Chromium 内核），用的是 Edge
 的自然语音，不是老式机械音；窗口会贴靠在屏幕右侧、撑满屏幕高度，视觉上接近
@@ -89,7 +91,7 @@ powershell -ExecutionPolicy Bypass -File .\install-excel.ps1
 
 详细步骤看 [`docs/03-PowerShell使用指南.md`](docs/03-PowerShell使用指南.md)。
 
-
+![安装效果截图](请在此插入安装完成后的功能区截图)
 
 ### 方式二：自己从源码打包（适合想改代码的人）
 
@@ -110,7 +112,7 @@ powershell -ExecutionPolicy Bypass -File .\install-excel.ps1
 - 50+ 卡拉OK 动态特效预设，K-Cut 智能音节切割
 - 支持 MP4/MKV/MOV 以及 SRT/ASS/WebVTT/Word/Excel 等 10+ 种格式导出
 
-![韵词字幕产品截图](docs/images/intro.webp)
+![韵词字幕产品截图](请在此插入韵词字幕软件截图)
 
 - 🌐 官网：https://shinesoft.cn/zh-CN/
 - 📥 免费下载：https://shinesoft.cn/zh-CN/download/
